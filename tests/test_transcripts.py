@@ -24,10 +24,13 @@ from henhouse.transcripts import (
     WORKING_SECS,
     context_window,
     iter_tool_calls,
+    load_tool_calls,
     read_tail,
     summarize,
+    tool_calls_from_dicts,
     transcript_index,
 )
+from henhouse.schema import SCHEMA_TOOLS
 
 
 def assistant(usage=None, tools=(), model="claude-sonnet-5"):
@@ -204,3 +207,59 @@ def test_truncated_trailing_line_is_skipped_not_fatal(tmp_path: Path):
 
 def test_missing_file_is_empty_not_an_exception(tmp_path: Path):
     assert read_tail(tmp_path / "nope.jsonl") == []
+
+
+def test_tool_calls_from_dicts_roundtrip():
+    raw = [
+        {
+            "name": "Write",
+            "input": {"file_path": "a.py"},
+            "id": "t1",
+            "session_id": "s1",
+            "source": "claude",
+            "is_subagent": False,
+        }
+    ]
+    calls = tool_calls_from_dicts(raw)
+    assert calls[0].name == "Write"
+    assert calls[0].to_dict() == raw[0]
+
+
+def test_load_tool_calls_from_henhouse_envelope(tmp_path: Path):
+    path = tmp_path / "calls.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema": SCHEMA_TOOLS,
+                "calls": [
+                    {
+                        "name": "Bash",
+                        "input": {"command": "pytest"},
+                        "id": "t1",
+                        "session_id": "sess",
+                        "source": "claude",
+                        "is_subagent": False,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    calls = load_tool_calls(path)
+    assert [c.name for c in calls] == ["Bash"]
+
+
+def test_load_tool_calls_from_legacy_json_list(tmp_path: Path):
+    path = tmp_path / "legacy.json"
+    path.write_text(
+        json.dumps([{"name": "Read", "input": {"file_path": "a.py"}}]),
+        encoding="utf-8",
+    )
+    calls = load_tool_calls(path)
+    assert calls[0].name == "Read"
+
+
+def test_load_tool_calls_from_jsonl(tmp_path: Path):
+    path = _write(tmp_path, [assistant(USAGE, tools=[("Write", "b.py")])])
+    calls = load_tool_calls(path)
+    assert [c.name for c in calls] == ["Write"]

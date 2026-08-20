@@ -14,6 +14,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from henhouse.schema import SCHEMA_TOOLS
 from henhouse.types import ToolCall
 
 HOME = Path.home()
@@ -175,6 +176,75 @@ def summarize(records: list[dict], mtime: float) -> dict[str, Any]:
         "active_subagents": 0,
         "estimate": {"verified": True},
     }
+
+
+def tool_calls_from_dicts(items: list[dict]) -> list[ToolCall]:
+    """Deserialize henhouse.tools.v1 call objects or --legacy-json lists."""
+    calls: list[ToolCall] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        name = item.get("name")
+        if not isinstance(name, str) or not name:
+            continue
+        raw_input = item.get("input")
+        tool_input = raw_input if isinstance(raw_input, dict) else {}
+        tool_id = item.get("id")
+        session_id = item.get("session_id")
+        source = item.get("source")
+        is_subagent = item.get("is_subagent")
+        calls.append(
+            ToolCall(
+                name=name,
+                input=tool_input,
+                id=tool_id if isinstance(tool_id, str) else None,
+                session_id=session_id if isinstance(session_id, str) else None,
+                source=source if isinstance(source, str) else "claude",
+                is_subagent=bool(is_subagent),
+            )
+        )
+    return calls
+
+
+def load_tool_calls(
+    path: str | Path,
+    *,
+    session_id: str | None = None,
+    is_subagent: bool | None = None,
+) -> list[ToolCall]:
+    """JSONL transcript, henhouse.tools.v1 envelope, or legacy JSON call list."""
+    path = Path(path)
+    if is_subagent is None:
+        is_subagent = path.name.startswith("agent-")
+    if session_id is None:
+        session_id = path.stem
+    try:
+        raw = path.read_text(encoding="utf-8").strip()
+    except OSError:
+        return []
+    if not raw:
+        return []
+    if raw[0] in ("{", "["):
+        try:
+            doc = json.loads(raw)
+        except ValueError:
+            doc = None
+        if isinstance(doc, dict) and doc.get("schema") == SCHEMA_TOOLS:
+            envelope = doc.get("calls")
+            if isinstance(envelope, list):
+                return tool_calls_from_dicts(envelope)
+        if isinstance(doc, list):
+            return tool_calls_from_dicts(doc)
+    try:
+        size = path.stat().st_size
+    except OSError:
+        return []
+    records = read_tail(path, tail_bytes=size)
+    return iter_tool_calls(
+        records,
+        session_id=session_id,
+        is_subagent=is_subagent,
+    )
 
 
 def iter_tool_calls(
