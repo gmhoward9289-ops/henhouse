@@ -1,5 +1,7 @@
 # henhouse
 
+[![Discussions](https://img.shields.io/github/discussions/gmhoward9289-ops/henhouse)](https://github.com/gmhoward9289-ops/henhouse/discussions)
+
 Parse Claude Code and Cursor JSONL transcripts into typed session summaries
 and tool-call events. Stdlib only. Read-only: it never writes a transcript,
 a registry, or a git tree.
@@ -17,7 +19,13 @@ is frozen.
 Python 3.10+:
 
 ```bash
-pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.0
+pip install henhouse
+```
+
+Or install a tagged release from GitHub:
+
+```bash
+pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.1
 ```
 
 Develop from a clone:

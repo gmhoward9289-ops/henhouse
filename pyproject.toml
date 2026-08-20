@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "henhouse"
-version = "0.1.0"
+version = "0.1.1"
 description = "Typed session and tool-call events from Claude Code / Cursor JSONL transcripts"
 readme = "README.md"
 requires-python = ">=3.10"

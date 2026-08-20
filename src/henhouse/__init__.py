@@ -21,4 +21,4 @@ __all__ = [
     "tool_calls_from_dicts",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
