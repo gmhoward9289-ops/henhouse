@@ -26,7 +26,7 @@ pip install henhouse
 Or install a tagged release from GitHub:
 
 ```bash
-pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.1
+pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.2
 ```
 
 Develop from a clone:
