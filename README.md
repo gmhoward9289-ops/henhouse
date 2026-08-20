@@ -17,6 +17,12 @@ is frozen.
 Python 3.10+:
 
 ```bash
+pip install git+https://github.com/gmhoward9289-ops/henhouse@v0.1.0
+```
+
+Develop from a clone:
+
+```bash
 pip install -e ".[dev]"
 ```
 
@@ -25,7 +31,7 @@ package's `src/henhouse/` tree, or keep using the vendored parser in those
 repos until an optional import lands.
 
 ```python
-from henhouse import iter_tool_calls, summarize, read_tail, ToolCall, SCHEMA_TOOLS
+from henhouse import iter_tool_calls, load_tool_calls, summarize, read_tail, ToolCall, SCHEMA_TOOLS
 ```
 
 If a `pip install leghorn` put a top-level `henhouse.py` on `sys.path`, that
