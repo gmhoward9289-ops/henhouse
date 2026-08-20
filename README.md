@@ -11,8 +11,9 @@ This package is the data layer. It is not the curses dashboard (that stays in
 for sessions (that stays in [roost](https://github.com/gmhoward9289-ops/roost)).
 Those products **link** this schema; they do not take a pip dependency on it.
 
-The JSON shape can change. Treat breakage as expected until a later version
-is frozen.
+Schema fields for `henhouse.tools.v1` and `henhouse.session.v1` are documented in
+[docs/SCHEMA.md](docs/SCHEMA.md). **0.1.x treats those shapes as stable** for
+downstream tools; additive fields are OK.
 
 ## Install
 

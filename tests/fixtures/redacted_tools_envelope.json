@@ -1,0 +1,21 @@
+{
+  "schema": "henhouse.tools.v1",
+  "calls": [
+    {
+      "name": "Write",
+      "input": {"file_path": "src/foo.py", "contents": "..."},
+      "id": "toolu_write1",
+      "session_id": "redacted-session",
+      "source": "claude",
+      "is_subagent": false
+    },
+    {
+      "name": "Grep",
+      "input": {"pattern": "assert_tool", "path": "tests"},
+      "id": "toolu_grep1",
+      "session_id": "redacted-session",
+      "source": "claude",
+      "is_subagent": false
+    }
+  ]
+}

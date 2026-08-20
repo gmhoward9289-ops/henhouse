@@ -6,7 +6,12 @@ Format of `python -m henhouse` JSON is a wrapper object, not a bare list:
 {"schema": "henhouse.tools.v1", "calls": [ ... ]}
 ```
 
-`--legacy-json` restores a bare list. Treat schema changes as expected.
+`--legacy-json` restores a bare list.
+
+## 0.1.2
+
+- `docs/SCHEMA.md` — frozen `henhouse.tools.v1` / `ToolCall` fields for 0.1.x
+- Redacted transcript fixtures under `tests/fixtures/`
 
 ## 0.1.1
 

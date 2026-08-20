@@ -1,0 +1,3 @@
+{"type":"user","message":{"content":"read src/foo.py"}}
+{"type":"assistant","message":{"model":"claude-sonnet-5","content":[{"type":"tool_use","id":"toolu_read1","name":"Read","input":{"file_path":"src/foo.py"}}]}}
+{"type":"assistant","message":{"model":"claude-sonnet-5","content":[{"type":"tool_use","id":"toolu_bash1","name":"Bash","input":{"command":"pytest tests -q"}}]}}
